@@ -4,7 +4,7 @@ import { initController, controllerReport, download } from './controller.js';
 import { initKeyboard, setKeyboardActive, keyboardReport } from './keyboard.js';
 import { initDiagnostics, runChecks, errorList } from './diagnostics.js';
 
-export const VERSION = 'v1';
+export const VERSION = 'v2';
 
 function showTab(name) {
   for (const t of document.querySelectorAll('.tab')) t.setAttribute('aria-selected', String(t.dataset.tab === name));

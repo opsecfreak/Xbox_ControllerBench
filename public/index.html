@@ -9,7 +9,7 @@
 </head>
 <body>
   <header class="top">
-    <div class="brand">ControllerBench <span class="ver" id="app-version">v1</span></div>
+    <div class="brand">ControllerBench <span class="ver" id="app-version">v2</span></div>
     <nav class="tabs" role="tablist">
       <button class="tab" role="tab" data-tab="controller" aria-selected="true">Controller</button>
       <button class="tab" role="tab" data-tab="keyboard" aria-selected="false">Keyboard</button>
@@ -27,7 +27,7 @@
           <label class="inline">Connection
             <select id="conn-type">
               <option value="usb">USB-C cable</option>
-              <option value="bluetooth">Bluetooth (v2, not tested yet)</option>
+              <option value="bluetooth">Bluetooth (v3, not tested yet)</option>
             </select>
           </label>
         </div>
@@ -48,7 +48,7 @@
             <div><span class="k">Mapping</span> <span id="pad-mapping"></span></div>
             <div><span class="k">Axes</span> <span id="pad-axes"></span></div>
             <div><span class="k">Buttons</span> <span id="pad-buttons"></span></div>
-            <div><span class="k">Reports/s</span> <span id="pad-rate">0</span></div>
+            <div title="On Windows, Chrome updates the controller state only when an input changes. 0 at rest is normal."><span class="k">Input updates/s</span> <span id="pad-rate">0</span></div>
             <div><span class="k">Rumble</span> <span id="pad-rumble"></span></div>
           </div>
           <ul id="pad-warnings" class="warnings"></ul>
@@ -79,7 +79,7 @@
             <h2>Buttons</h2>
             <span id="btn-progress" class="pill">0 / 16</span>
           </div>
-          <p class="note">Press every button once. Tested buttons stay marked. The Xbox button is optional: Windows often keeps it from the browser.</p>
+          <p class="note">Press every button once. Tested buttons stay marked. The Xbox button is optional: some systems keep it from the browser. On Windows it can also open Game Bar.</p>
           <div id="btn-grid" class="btn-grid"></div>
           <button class="btn ghost" id="btn-reset">Reset button test</button>
         </div>
@@ -213,6 +213,8 @@
         </div>
         <div class="row wrap gap small"><span class="k">Other keys</span> <span id="kb-other" class="mono">none</span></div>
         <div class="row wrap gap small"><span class="k">Held keys</span> <span id="kb-held-list" class="mono">none</span></div>
+        <div class="row wrap gap small"><span class="k">Alt codes</span> <span id="kb-altcodes" class="mono">none</span></div>
+        <p class="note">Some keyboards and chatpads type symbols as Alt codes (Alt + numpad digits). This works only on Windows. Those fast numpad presses are listed here and are not counted as chatter.</p>
       </div>
       <div class="grid2">
         <div class="card">

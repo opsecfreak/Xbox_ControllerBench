@@ -1,6 +1,6 @@
 {
   "name": "xbox-controllerbench",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Browser-based tester for Xbox One controllers (USB-C or Bluetooth) and USB keyboards. Software calibration only. Nothing is written to device firmware.",
   "type": "module",
   "main": "server.js",

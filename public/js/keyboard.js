@@ -38,6 +38,10 @@ function codeOf(e) {
   return e.code || (e.key ? 'key:' + e.key : 'unknown');
 }
 
+function mods(e) {
+  return [e.ctrlKey && 'Ctrl', e.shiftKey && 'Shift', e.altKey && 'Alt', e.metaKey && 'Win'].filter(Boolean).join('+');
+}
+
 function isFormField(t) {
   return t && (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA');
 }
@@ -66,8 +70,11 @@ function onDown(e) {
   }
   const dt = lastEventT === null ? 0 : t - lastEventT;
   lastEventT = t;
-  let line = `+${dt.toFixed(1).padStart(7)} ms  down  ${code.padEnd(14)} key=${JSON.stringify(e.key)} loc=${e.location}`;
+  const m = mods(e);
+  let line = `+${dt.toFixed(1).padStart(7)} ms  down  ${code.padEnd(14)} key=${JSON.stringify(e.key)} loc=${e.location}${m ? '  mods=' + m : ''}`;
   if (res.type === 'chatter') line += `  CHATTER (${res.gapMs.toFixed(1)} ms after release)`;
+  if (res.type === 'altcode-digit') line += `  Alt code digits so far: ${res.digits}`;
+  if (code === 'F23' && e.shiftKey && e.metaKey) line += '  (Shift+Win+F23 is what a Windows Copilot key sends)';
   if (res.type === 'double-down') line += '  DOWN AGAIN WITHOUT RELEASE';
   addLog(line);
   renderStats();
@@ -83,6 +90,10 @@ function onUp(e) {
   const dt = lastEventT === null ? 0 : t - lastEventT;
   lastEventT = t;
   addLog(`+${dt.toFixed(1).padStart(7)} ms  up    ${code.padEnd(14)} held=${res.heldMs === null ? '?' : res.heldMs.toFixed(1) + ' ms'}`);
+  if (res.altCode) {
+    const ch = res.altCode.char === null ? 'not decoded' : JSON.stringify(res.altCode.char);
+    addLog(`-- Alt code ${res.altCode.digits} typed: ${ch} --`);
+  }
   renderStats();
 }
 
@@ -100,6 +111,9 @@ function renderStats() {
   $('kb-held').textContent = tracker.held.size;
   $('kb-rollover').textContent = s.maxRollover;
   $('kb-chatter').textContent = s.chatterEvents;
+  $('kb-altcodes').textContent = s.altCodes.length
+    ? s.altCodes.slice(-20).map((a) => `${a.digits}${a.char === null ? '' : ' ' + JSON.stringify(a.char)}`).join(', ')
+    : 'none';
   $('kb-rollover-keys').textContent = s.maxRolloverKeys.join(' + ') || 'none';
   $('kb-held-list').textContent = [...tracker.held.keys()].join(' + ') || 'none';
   $('kb-other').textContent = [...other].join(', ') || 'none';
