@@ -28,6 +28,27 @@ export const AXES = [
   { i: 3, name: 'Right Y' },
 ];
 
+/**
+ * Default deadzones from Microsoft's xinput.h. Windows games that use XInput
+ * commonly ignore stick movement inside these radii. Values are converted
+ * from the 16-bit stick range (32767) and the 8-bit trigger range (255).
+ *   XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE  7849
+ *   XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE 8689
+ *   XINPUT_GAMEPAD_TRIGGER_THRESHOLD    30
+ */
+export const XINPUT_DEADZONE = {
+  left: 7849 / 32767,
+  right: 8689 / 32767,
+  trigger: 30 / 255,
+};
+
+/** Classify a resting stick offset against the user limit and the XInput default deadzone. */
+export function driftVerdict(offset, limit, xinputDeadzone) {
+  if (offset <= limit) return { level: 'ok', text: 'OK' };
+  if (offset < xinputDeadzone) return { level: 'warn', text: 'Drift, inside Windows default deadzone' };
+  return { level: 'bad', text: 'Drift, outside Windows default deadzone' };
+}
+
 /** Buttons that must be pressed for the button test to pass. */
 export const REQUIRED_BUTTONS = BUTTONS.filter((b) => !b.optional).map((b) => b.i);
 

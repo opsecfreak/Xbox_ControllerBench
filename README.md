@@ -5,7 +5,7 @@ keyboards. Runs in Chrome via npm. Live stick, trigger and button readout,
 drift and deadzone checks, rumble test, keyboard rollover, ghosting and key
 chatter tests. Software calibration only. Nothing is written to device firmware.
 
-**Version:** v1 (USB-C controller + keyboard). Bluetooth is planned for v2.
+**Version:** v2 (USB-C controller + keyboard). Bluetooth is planned for v3.
 
 ## Requirements
 
@@ -37,13 +37,18 @@ Notes:
 ## Controller tests (Controller tab)
 
 1. Check the **Controller** card. It shows the name, mapping, axes, buttons,
-   reports per second and rumble support. Yellow warnings mean Chrome did not
+   input updates per second and rumble support. On Windows, input updates
+   read 0 while nothing moves. That is normal. Yellow warnings mean Chrome did not
    map the controller as standard. Use **Raw inputs** in that case.
 2. **Buttons:** press every button once. The counter goes to 16 / 16.
-   - Note: the Xbox button is optional. Windows often keeps it from the browser.
+   - Note: the Xbox button is optional. Some systems keep it from the browser.
+     On Windows it can also open Game Bar.
 3. **Drift test:** put the controller flat. Do not touch it. Press
    **Start drift test**. Result `Drift` means the rest offset is above your
-   warning limit (default 0.05, your value, not a factory spec).
+   warning limit (default 0.05, your value, not a factory spec). The result
+   also says if the offset is inside the Windows XInput default deadzone
+   (xinput.h: left 0.240, right 0.265). Most Windows games ignore movement
+   inside that radius.
 4. **Range test:** press **Start range test**. Turn both sticks slowly against
    the edge for 3 full circles. Press **Stop**. The blue outline shows the
    edge each stick reached.
@@ -79,8 +84,12 @@ Notes:
 5. **Full screen + capture system keys** lets Chrome capture keys such as Win
    and Alt+Tab. Press and hold Esc to leave full screen.
 
-Keys that are not on the standard layout (media keys, extra keys) show under
+Keys that are not on the standard layout (media keys, F13 to F24) show under
 **Other keys**.
+
+Some keyboards and chatpads type symbols as Windows Alt codes (Alt held,
+digits on the numpad). These show under **Alt codes** and are not counted as
+chatter. Alt codes work only on Windows.
 
 ## Diagnostics tab
 
@@ -113,5 +122,5 @@ server. See [AGENTS.md](AGENTS.md) for the code map and rules.
 
 ## Roadmap
 
-- v2: Bluetooth connection. Test Chrome mapping over Bluetooth on Windows and
+- v3: Bluetooth connection. Test Chrome mapping over Bluetooth on Windows and
   Linux. Fix any non-standard mapping.

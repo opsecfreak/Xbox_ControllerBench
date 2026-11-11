@@ -2,7 +2,7 @@
 // calibration and rumble. Uses only the Chrome Gamepad API (read inputs)
 // and GamepadHapticActuator (rumble). Nothing is written to the controller.
 
-import { BUTTONS, REQUIRED_BUTTONS, checkGamepad, snapshot } from './lib/mapping.js';
+import { BUTTONS, REQUIRED_BUTTONS, XINPUT_DEADZONE, checkGamepad, driftVerdict, snapshot } from './lib/mapping.js';
 import { driftStats, RangeRecorder, RateMeter, round } from './lib/stats.js';
 import {
   applyStick, applyTrigger, defaultCalibration, loadCalibration, saveCalibration,
@@ -155,12 +155,13 @@ function renderDrift() {
   const r = state.driftResult;
   if (!r) return;
   const limit = Number($('drift-threshold').value) || 0.05;
-  const verdict = (st) => {
+  const verdict = (st, dz) => {
     if (st.maxMag > 0.5) return ['warn', 'Moved during test. Run again.'];
-    return st.offset > limit ? ['bad', 'Drift'] : ['ok', 'OK'];
+    const v = driftVerdict(st.offset, limit, dz);
+    return [v.level, v.text];
   };
-  const [lc, lt] = verdict(r.left);
-  const [rc, rt] = verdict(r.right);
+  const [lc, lt] = verdict(r.left, XINPUT_DEADZONE.left);
+  const [rc, rt] = verdict(r.right, XINPUT_DEADZONE.right);
   const rows = [
     ['Samples', r.left.count, r.right.count],
     ['Rest offset', round(r.left.offset), round(r.right.offset)],
@@ -172,10 +173,13 @@ function renderDrift() {
   const tbody = $('drift-results').querySelector('tbody');
   tbody.textContent = '';
   for (const [k, a, b] of rows) tbody.appendChild(tr(k, a, b));
+  tbody.appendChild(tr('Windows default deadzone (xinput.h)', round(XINPUT_DEADZONE.left), round(XINPUT_DEADZONE.right)));
   tbody.appendChild(tr('Result', lt, rt, lc, rc));
-  tbody.appendChild(tr('Trigger at rest (LT / RT)', round(r.ltRest), round(r.rtRest)));
+  const trigLevel = (v) => (v > XINPUT_DEADZONE.trigger ? 'warn' : '');
+  tbody.appendChild(tr('Trigger at rest (LT / RT)', round(r.ltRest), round(r.rtRest), trigLevel(r.ltRest), trigLevel(r.rtRest)));
   $('drift-results').hidden = false;
-  status('drift-status', `Done. Warning limit ${limit}.`);
+  const still = r.left.maxResidual < 1e-6 && r.right.maxResidual < 1e-6;
+  status('drift-status', `Done. Warning limit ${limit}.` + (still ? ' Values did not change during the test. Windows sends a new value only when the input changes, so wobble and noise read 0.' : ''));
 }
 
 function startRange() {

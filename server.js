@@ -90,7 +90,7 @@ if (isMain) {
   });
   server.listen(port, host, () => {
     const shown = host === '0.0.0.0' ? '127.0.0.1' : host;
-    console.log(`ControllerBench v1 running at http://${shown}:${port}/`);
+    console.log(`ControllerBench running at http://${shown}:${port}/`);
     console.log('Open this URL in Chrome. Press Ctrl+C to stop.');
   });
 }
