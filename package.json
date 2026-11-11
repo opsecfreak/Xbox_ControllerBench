@@ -1,0 +1,26 @@
+{
+  "name": "xbox-controllerbench",
+  "version": "1.0.0",
+  "description": "Browser-based tester for Xbox One controllers (USB-C or Bluetooth) and USB keyboards. Software calibration only. Nothing is written to device firmware.",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/opsecfreak/Xbox_ControllerBench.git"
+  },
+  "keywords": [
+    "xbox-controller",
+    "gamepad-api",
+    "keyboard-tester",
+    "chrome",
+    "diagnostics"
+  ],
+  "author": "opsecfreak"
+}

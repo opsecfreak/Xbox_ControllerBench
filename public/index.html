@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ControllerBench</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">ControllerBench <span class="ver" id="app-version">v1</span></div>
+    <nav class="tabs" role="tablist">
+      <button class="tab" role="tab" data-tab="controller" aria-selected="true">Controller</button>
+      <button class="tab" role="tab" data-tab="keyboard" aria-selected="false">Keyboard</button>
+      <button class="tab" role="tab" data-tab="diagnostics" aria-selected="false">Diagnostics <span class="badge" id="err-badge" hidden>0</span></button>
+    </nav>
+    <button class="btn" id="export-report">Export report</button>
+  </header>
+
+  <main>
+    <!-- CONTROLLER -->
+    <section class="panel-set" data-panel="controller">
+      <div class="card" id="pad-status">
+        <div class="row between">
+          <h2>Controller</h2>
+          <label class="inline">Connection
+            <select id="conn-type">
+              <option value="usb">USB-C cable</option>
+              <option value="bluetooth">Bluetooth (v2, not tested yet)</option>
+            </select>
+          </label>
+        </div>
+        <div id="pad-empty" class="empty">
+          <p><strong>No controller seen yet.</strong></p>
+          <ol>
+            <li>Connect the controller with a USB-C data cable.</li>
+            <li>Press any button on the controller.</li>
+          </ol>
+          <p class="note">Chrome shows a controller to the page only after a button press. A charge-only cable does not carry data.</p>
+        </div>
+        <div id="pad-info" hidden>
+          <div class="row wrap gap">
+            <label class="inline" id="pad-select-wrap" hidden>Device <select id="pad-select"></select></label>
+            <div><span class="k">Name</span> <span id="pad-id" class="mono"></span></div>
+          </div>
+          <div class="row wrap gap small">
+            <div><span class="k">Mapping</span> <span id="pad-mapping"></span></div>
+            <div><span class="k">Axes</span> <span id="pad-axes"></span></div>
+            <div><span class="k">Buttons</span> <span id="pad-buttons"></span></div>
+            <div><span class="k">Reports/s</span> <span id="pad-rate">0</span></div>
+            <div><span class="k">Rumble</span> <span id="pad-rumble"></span></div>
+          </div>
+          <ul id="pad-warnings" class="warnings"></ul>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <h2>Sticks</h2>
+          <div class="sticks">
+            <figure>
+              <canvas id="stick-left" width="240" height="240" aria-label="Left stick position"></canvas>
+              <figcaption>Left <span class="mono" id="read-left"></span></figcaption>
+            </figure>
+            <figure>
+              <canvas id="stick-right" width="240" height="240" aria-label="Right stick position"></canvas>
+              <figcaption>Right <span class="mono" id="read-right"></span></figcaption>
+            </figure>
+          </div>
+          <p class="legend"><span class="dot raw"></span> raw <span class="dot cal"></span> calibrated <span class="ring dz"></span> deadzone <span class="ring edge"></span> range test outline</p>
+          <h3>Triggers</h3>
+          <div class="trigger"><span>LT</span><div class="bar"><div class="fill" id="bar-lt"></div></div><span class="mono" id="read-lt">0.000</span></div>
+          <div class="trigger"><span>RT</span><div class="bar"><div class="fill" id="bar-rt"></div></div><span class="mono" id="read-rt">0.000</span></div>
+        </div>
+
+        <div class="card">
+          <div class="row between">
+            <h2>Buttons</h2>
+            <span id="btn-progress" class="pill">0 / 16</span>
+          </div>
+          <p class="note">Press every button once. Tested buttons stay marked. The Xbox button is optional: Windows often keeps it from the browser.</p>
+          <div id="btn-grid" class="btn-grid"></div>
+          <button class="btn ghost" id="btn-reset">Reset button test</button>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <h2>Stick tests</h2>
+          <h3>1. Drift test</h3>
+          <p class="note">Put the controller on a flat surface. Do not touch the sticks or triggers. Then start the test.</p>
+          <div class="row gap">
+            <button class="btn" id="drift-start">Start drift test (3 s)</button>
+            <span id="drift-status" class="small"></span>
+          </div>
+          <table class="results" id="drift-results" hidden>
+            <thead><tr><th></th><th>Left</th><th>Right</th></tr></thead>
+            <tbody></tbody>
+          </table>
+          <label class="inline small">Drift warning above <input type="number" id="drift-threshold" min="0.005" max="0.5" step="0.005" value="0.05"> (your limit, not a factory spec)</label>
+
+          <h3>2. Range test</h3>
+          <p class="note">Start the test. Push both sticks to the edge and turn them slowly through 3 full circles. Then stop.</p>
+          <div class="row gap">
+            <button class="btn" id="range-start">Start range test</button>
+            <button class="btn ghost" id="range-stop" disabled>Stop</button>
+            <span id="range-status" class="small"></span>
+          </div>
+          <table class="results" id="range-results" hidden>
+            <thead><tr><th></th><th>Left</th><th>Right</th></tr></thead>
+            <tbody></tbody>
+          </table>
+
+          <h3>3. Trigger range</h3>
+          <p class="note">Release both triggers, then press each trigger fully a few times. The page records the lowest rest value and highest pressed value.</p>
+          <div class="row gap">
+            <button class="btn" id="trig-start">Start trigger test</button>
+            <button class="btn ghost" id="trig-stop" disabled>Stop</button>
+            <span id="trig-status" class="small"></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Software calibration</h2>
+          <p class="note">These values change only how this page reads the controller. Nothing is sent to the controller. Saved in this browser for this controller name.</p>
+          <div class="row gap wrap">
+            <button class="btn" id="cal-suggest" disabled>Use test results</button>
+            <button class="btn" id="cal-save">Save</button>
+            <button class="btn ghost" id="cal-reset">Reset to defaults</button>
+            <button class="btn ghost" id="cal-export">Export JSON</button>
+            <label class="btn ghost file">Import JSON <input type="file" id="cal-import" accept="application/json,.json" hidden></label>
+          </div>
+          <span id="cal-status" class="small"></span>
+          <table class="cal" id="cal-table">
+            <thead><tr><th></th><th>Center X</th><th>Center Y</th><th>Inner deadzone</th><th>Outer edge</th></tr></thead>
+            <tbody>
+              <tr data-stick="left"><th>Left</th>
+                <td><input type="number" data-f="cx" step="0.005" min="-0.5" max="0.5"></td>
+                <td><input type="number" data-f="cy" step="0.005" min="-0.5" max="0.5"></td>
+                <td><input type="number" data-f="inner" step="0.01" min="0" max="0.5"></td>
+                <td><input type="number" data-f="outer" step="0.01" min="0.5" max="1"></td></tr>
+              <tr data-stick="right"><th>Right</th>
+                <td><input type="number" data-f="cx" step="0.005" min="-0.5" max="0.5"></td>
+                <td><input type="number" data-f="cy" step="0.005" min="-0.5" max="0.5"></td>
+                <td><input type="number" data-f="inner" step="0.01" min="0" max="0.5"></td>
+                <td><input type="number" data-f="outer" step="0.01" min="0.5" max="1"></td></tr>
+            </tbody>
+          </table>
+          <table class="cal" id="cal-trig">
+            <thead><tr><th></th><th>Rest (min)</th><th>Full (max)</th></tr></thead>
+            <tbody>
+              <tr data-trig="lt"><th>LT</th>
+                <td><input type="number" data-f="min" step="0.01" min="0" max="0.5"></td>
+                <td><input type="number" data-f="max" step="0.01" min="0.5" max="1"></td></tr>
+              <tr data-trig="rt"><th>RT</th>
+                <td><input type="number" data-f="min" step="0.01" min="0" max="0.5"></td>
+                <td><input type="number" data-f="max" step="0.01" min="0.5" max="1"></td></tr>
+            </tbody>
+          </table>
+
+          <h2>Rumble</h2>
+          <p class="note">Short pulses only. Duration is capped at 1000 ms.</p>
+          <div class="sliders">
+            <label>Strong motor (left) <input type="range" id="rum-strong" min="0" max="1" step="0.05" value="0.5"> <span class="mono" id="rum-strong-v">0.50</span></label>
+            <label>Weak motor (right) <input type="range" id="rum-weak" min="0" max="1" step="0.05" value="0.5"> <span class="mono" id="rum-weak-v">0.50</span></label>
+            <label>Duration ms <input type="range" id="rum-dur" min="100" max="1000" step="50" value="400"> <span class="mono" id="rum-dur-v">400</span></label>
+          </div>
+          <div class="row gap wrap">
+            <button class="btn" id="rum-both">Both motors</button>
+            <button class="btn" id="rum-left">Strong only</button>
+            <button class="btn" id="rum-right">Weak only</button>
+            <button class="btn" id="rum-trig">Trigger motors</button>
+            <button class="btn ghost" id="rum-stop">Stop</button>
+          </div>
+          <span id="rum-status" class="small"></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <details>
+          <summary><h2 class="inline-h">Raw inputs</h2> <span class="small">every axis and button as Chrome reports it</span></summary>
+          <div class="raw">
+            <div><h3>Axes</h3><div id="raw-axes" class="mono"></div></div>
+            <div><h3>Buttons</h3><div id="raw-buttons" class="mono raw-buttons"></div></div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- KEYBOARD -->
+    <section class="panel-set" data-panel="keyboard" hidden>
+      <div class="card">
+        <div class="row between wrap gap">
+          <h2>Keyboard</h2>
+          <div class="row gap wrap">
+            <button class="btn" id="kb-lock">Full screen + capture system keys</button>
+            <button class="btn ghost" id="kb-reset">Reset keyboard test</button>
+          </div>
+        </div>
+        <p class="note">Click in this page, then press every key. Some keys (Win, Alt+Tab, Ctrl+W) go to the system first. Full screen mode lets Chrome capture most of them. Press and hold Esc to leave full screen.</p>
+        <div class="row wrap gap small">
+          <div><span class="k">Keys tested</span> <span id="kb-tested">0</span></div>
+          <div><span class="k">Held now</span> <span id="kb-held">0</span></div>
+          <div><span class="k">Max held at once</span> <span id="kb-rollover">0</span></div>
+          <div><span class="k">Chatter events</span> <span id="kb-chatter">0</span></div>
+          <label class="inline">Chatter if re-pressed within <input type="number" id="kb-chatter-ms" min="5" max="200" step="5" value="30"> ms</label>
+        </div>
+        <div id="kb-focus" class="kb-wrap" tabindex="0">
+          <div class="kb" id="kb-main"></div>
+          <div class="kb" id="kb-nav"></div>
+          <div class="kb" id="kb-num"></div>
+        </div>
+        <div class="row wrap gap small"><span class="k">Other keys</span> <span id="kb-other" class="mono">none</span></div>
+        <div class="row wrap gap small"><span class="k">Held keys</span> <span id="kb-held-list" class="mono">none</span></div>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h2>Rollover and ghosting</h2>
+          <p class="note">Hold keys down one at a time and watch "Max held at once". If a held key does not light up, the keyboard dropped it (ghosting or rollover limit). Try common groups: W A S D + Shift + Space, and Q W E R T.</p>
+          <div><span class="k">Max group</span> <span id="kb-rollover-keys" class="mono">none</span></div>
+          <h2>Chatter</h2>
+          <p class="note">Tap each key once, at normal speed. A chatter event means one tap was seen as two presses.</p>
+          <div id="kb-chatter-list" class="mono small">none</div>
+        </div>
+        <div class="card">
+          <h2>Event log</h2>
+          <div id="kb-log" class="log mono"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DIAGNOSTICS -->
+    <section class="panel-set" data-panel="diagnostics" hidden>
+      <div class="card">
+        <h2>Browser checks</h2>
+        <table class="results" id="diag-table"><tbody></tbody></table>
+        <button class="btn ghost" id="diag-refresh">Run checks again</button>
+      </div>
+      <div class="card">
+        <div class="row between">
+          <h2>Page errors</h2>
+          <button class="btn ghost" id="err-copy">Copy errors</button>
+        </div>
+        <p class="note">If something does not work, copy these errors and send them over.</p>
+        <div id="err-list" class="log mono">none</div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/errors.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
