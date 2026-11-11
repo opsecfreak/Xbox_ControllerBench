@@ -50,4 +50,7 @@ Code in `public/js/lib/` must not touch the DOM. Tests import it directly.
 ## Versions
 
 Bump `VERSION` in `public/js/app.js`, `version` in `package.json` and add a
-`CHANGELOG.md` entry for each release (v1, v2, v3...).
+`CHANGELOG.md` entry (`## vN (date)`) for each release (v1, v2, v3...).
+After the PR is merged, tag `main` with `vN` and push the tag.
+`.github/workflows/release.yml` runs the tests and publishes the GitHub
+release with that CHANGELOG section as notes.
