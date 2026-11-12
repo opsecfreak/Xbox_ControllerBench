@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Desktop Mode</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">ControllerBench <span class="ver">Desktop mode v1</span></div>
+    <nav class="tabs">
+      <a class="tab" href="index.html">Tester</a>
+      <span class="tab" aria-selected="true">Desktop mode</span>
+    </nav>
+  </header>
+
+  <main>
+    <section class="panel-set">
+      <div class="card">
+        <div class="row between wrap gap">
+          <h2>Status</h2>
+          <div class="row gap wrap">
+            <button class="btn" id="dm-start" type="button">Start desktop mode</button>
+            <button class="btn ghost" id="dm-stop" type="button">Stop</button>
+            <button class="btn ghost" id="dm-enable" type="button">Pause</button>
+          </div>
+        </div>
+        <div class="row wrap gap small">
+          <div><span class="k">Helper</span> <span id="st-running">-</span></div>
+          <div><span class="k">Controller</span> <span id="st-connected">-</span></div>
+          <div><span class="k">Mode</span> <span id="st-enabled">-</span></div>
+          <div><span class="k">Buttons down</span> <span id="st-buttons" class="mono">-</span></div>
+          <div><span class="k">Left stick</span> <span id="st-left" class="mono">-</span></div>
+          <div><span class="k">Right stick</span> <span id="st-right" class="mono">-</span></div>
+        </div>
+        <ul id="st-warn" class="warnings"></ul>
+        <p class="note">Hold <strong>View + Menu</strong> for the time set below to pause or resume desktop mode, for example before you start a game. The controller rumbles: right motor = on, left motor = off. The chatpad types as a normal keyboard all the time. Desktop mode does not change it.</p>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <h2>Pointer (left stick)</h2>
+          <div class="form">
+            <label>Speed at full tilt (px/s) <input type="number" data-k="mouse.speed" min="50" max="6000" step="50"></label>
+            <label>Curve (1 = linear, 2 = fine control near center) <input type="number" data-k="mouse.curve" min="1" max="4" step="0.1"></label>
+            <label>Deadzone (0 to 0.6) <input type="number" data-k="mouse.deadzone" min="0" max="0.6" step="0.01"></label>
+            <label>Center X <input type="number" data-k="mouse.cx" min="-0.5" max="0.5" step="0.005"></label>
+            <label>Center Y <input type="number" data-k="mouse.cy" min="-0.5" max="0.5" step="0.005"></label>
+            <label>Precision speed factor <input type="number" data-k="mouse.precisionFactor" min="0.05" max="1" step="0.05"></label>
+            <label>Invert Y <input type="checkbox" data-k="mouse.invertY"></label>
+          </div>
+          <label class="btn ghost file">Load center and deadzone from a tester calibration export <input type="file" id="dm-bench" accept="application/json,.json" hidden></label>
+          <p class="note">Use the tester's drift test, press "Use test results", then "Export JSON". Load that file here.</p>
+
+          <h2>Scroll (right stick)</h2>
+          <div class="form">
+            <label>Speed (notches/s at full tilt) <input type="number" data-k="scroll.speed" min="1" max="60" step="1"></label>
+            <label>Deadzone <input type="number" data-k="scroll.deadzone" min="0" max="0.6" step="0.01"></label>
+            <label>Invert <input type="checkbox" data-k="scroll.invertY"></label>
+            <label>Horizontal scroll <input type="checkbox" data-k="scroll.horizontal"></label>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Buttons</h2>
+          <table class="results" id="dm-buttons"><tbody></tbody></table>
+          <p class="note">View and Menu act on release, so holding both to pause does not also press their keys. Custom: type <span class="mono">key:Ctrl+Shift+T</span>, <span class="mono">mouse:back</span>, <span class="mono">precision</span> or <span class="mono">none</span>.</p>
+
+          <h2>General</h2>
+          <div class="form">
+            <label>Start in desktop mode <input type="checkbox" data-k="startEnabled"></label>
+            <label>Hold View + Menu to pause (ms) <input type="number" data-k="toggle.holdMs" min="300" max="5000" step="100"></label>
+            <label>Rumble on pause and resume <input type="checkbox" data-k="toggle.rumble"></label>
+            <label>Trigger press point (0 to 1) <input type="number" data-k="triggerThreshold" min="0.02" max="0.9" step="0.01"></label>
+            <label>Key repeat delay (ms) <input type="number" data-k="repeat.delayMs" min="100" max="2000" step="50"></label>
+            <label>Key repeat rate (ms) <input type="number" data-k="repeat.rateMs" min="20" max="1000" step="10"></label>
+            <label>Controller <select data-k="player">
+              <option value="auto">First connected</option>
+              <option value="0">Player 1</option><option value="1">Player 2</option>
+              <option value="2">Player 3</option><option value="3">Player 4</option>
+            </select></label>
+            <label>Poll interval (ms) <input type="number" data-k="pollMs" min="4" max="50" step="1"></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row gap wrap">
+          <button class="btn" id="dm-save" type="button">Save settings</button>
+          <button class="btn ghost" id="dm-defaults" type="button">Load defaults</button>
+          <span id="dm-msg" class="small"></span>
+        </div>
+        <p class="note">Saved settings apply at once, even while desktop mode runs. Stored in data/desktop-config.json on this PC.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/errors.js"></script>
+  <script type="module" src="js/desktop-page.js"></script>
+</body>
+</html>

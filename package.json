@@ -6,6 +6,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "desktop": "node server.js --desktop",
     "test": "node --test"
   },
   "engines": {

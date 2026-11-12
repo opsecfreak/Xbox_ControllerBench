@@ -29,6 +29,11 @@ with both together.
 The chatpad's Alt-code symbols (green or orange + a letter) work only on
 Windows. Bluetooth is not tested yet (issue 3).
 
+## Desktop mode (branch `desktop-mode`)
+
+Use the controller as a mouse and the chatpad as a keyboard on Windows, with
+a settings page. See [docs/DESKTOP.md](docs/DESKTOP.md) on that branch.
+
 ## Requirements
 
 - Node.js 18 or newer. No npm packages to install.

@@ -1,5 +1,15 @@
 # Changelog
 
+## Desktop mode v1 (branch desktop-mode, 2026-11-12)
+
+- Changed: controller as mouse and keyboard on Windows. Left stick = pointer,
+  right stick = scroll, buttons map to clicks, keys or key combos. Hold
+  View + Menu to pause. Settings page at /desktop.html. `npm run desktop`.
+- Safety: all held input is released on pause, disconnect, stop and crash.
+  Local-only settings API.
+- Untested: real Windows hardware. Logic is unit tested; the helper compiles
+  as C# 5 and its structs match 64-bit Windows sizes.
+
 ## v3 (2026-11-12)
 
 - Changed: Xbox chatpad layout in the Keyboard tab. All 51 chatpad keys can be
