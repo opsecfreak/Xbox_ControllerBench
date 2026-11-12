@@ -71,16 +71,30 @@ function setupCanvases() {
   }
 }
 
+// Standard buttons, plus any extra buttons the controller reports
+// (for example Share, a touchpad click or a vendor button at index 17+).
+let buttonList = [];
+
+function addButtonTile(b) {
+  const el = document.createElement('div');
+  el.className = 'bt' + (b.optional ? ' optional' : '');
+  el.id = 'bt-' + b.i;
+  el.innerHTML = `<span class="n"></span><span class="v">0 presses</span>`;
+  el.querySelector('.n').textContent = b.name;
+  $('btn-grid').appendChild(el);
+}
+
 function buildButtonGrid() {
-  const grid = $('btn-grid');
-  grid.textContent = '';
-  for (const b of BUTTONS) {
-    const el = document.createElement('div');
-    el.className = 'bt' + (b.optional ? ' optional' : '');
-    el.id = 'bt-' + b.i;
-    el.innerHTML = `<span class="n"></span><span class="v">0 presses</span>`;
-    el.querySelector('.n').textContent = b.name;
-    grid.appendChild(el);
+  $('btn-grid').textContent = '';
+  buttonList = BUTTONS.slice();
+  for (const b of buttonList) addButtonTile(b);
+}
+
+function ensureExtraButtons(count) {
+  for (let i = buttonList.length; i < count; i++) {
+    const b = { i, name: `Button ${i}`, optional: true, extra: true };
+    buttonList.push(b);
+    addButtonTile(b);
   }
 }
 
@@ -450,7 +464,8 @@ function render(gp, now) {
   }
 
   // buttons
-  for (const b of BUTTONS) {
+  ensureExtraButtons(s.buttons.length);
+  for (const b of buttonList) {
     const st = s.buttons[b.i];
     const el = $('bt-' + b.i);
     if (!st) { el.classList.remove('down'); continue; }
@@ -596,7 +611,7 @@ export function controllerReport() {
     connection: $('conn-type').value,
     controller: s ? { id: s.id, mapping: s.mapping, axes: s.axes.length, buttons: s.buttons.length } : null,
     reportsPerSecond: Math.round(state.rate.rate()),
-    buttonsTested: BUTTONS.filter((b) => state.tested.has(b.i)).map((b) => b.name),
+    buttonsTested: buttonList.filter((b) => state.tested.has(b.i)).map((b) => b.name),
     buttonsMissing: BUTTONS.filter((b) => !b.optional && !state.tested.has(b.i)).map((b) => b.name),
     drift: state.driftResult,
     driftWarnLimit: Number($('drift-threshold').value),

@@ -36,13 +36,16 @@ npm test    # node --test (must pass on Node 18 and 22)
 | `public/js/errors.js` | Classic script. Collects page errors for Diagnostics. |
 | `public/js/app.js` | Entry: tabs, report export, `VERSION`. |
 | `public/js/controller.js` | Controller tab: render loop, tests, calibration UI, rumble. |
-| `public/js/keyboard.js` | Keyboard tab: key map, log, key lock. |
+| `public/js/keyboard.js` | Keyboard tab: key map, log, key lock, layout switch. |
+| `public/js/chatpad-ui.js` | Chatpad layout: test and learn chatpad keys. |
 | `public/js/diagnostics.js` | Browser checks and error list. |
 | `public/js/lib/stats.js` | Pure math: drift stats, range recorder, rate meter. |
 | `public/js/lib/calibration.js` | Pure: apply, sanitize, suggest, load/save calibration. |
 | `public/js/lib/keytracker.js` | Pure: rollover, chatter, double-down detection. |
 | `public/js/lib/mapping.js` | Standard mapping names, gamepad checks, snapshot. |
 | `public/js/lib/layout.js` | ANSI keyboard layout by `KeyboardEvent.code`. |
+| `public/js/lib/chatpad.js` | Pure: chatpad layout, key matching, learning. |
+| `docs/images/` | README images (controller diagram SVG, chatpad photo). |
 | `test/*.test.js` | Node tests for `lib/` and the server. |
 
 Code in `public/js/lib/` must not touch the DOM. Tests import it directly.

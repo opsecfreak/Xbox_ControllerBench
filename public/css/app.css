@@ -142,8 +142,27 @@ details summary { cursor: pointer; }
 .raw-buttons { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 2px 12px; }
 .raw .on { color: var(--accent); font-weight: 700; }
 
-.kb-wrap { display: flex; gap: 18px; flex-wrap: wrap; margin: 12px 0; outline: none; padding: 8px; border-radius: var(--radius); border: 1px dashed transparent; overflow-x: auto; }
-.kb-wrap:focus { border-color: var(--line); }
+.kb-focus { margin: 12px 0; outline: none; padding: 8px; border-radius: var(--radius); border: 1px dashed transparent; overflow-x: auto; }
+.kb-focus:focus { border-color: var(--line); }
+.kb-wrap { display: flex; gap: 18px; flex-wrap: wrap; }
+.kb.chatpad { --u: 54px; background: var(--key); padding: 12px; border-radius: 28px; width: max-content; margin-top: 8px; }
+.cpkey {
+  height: var(--u); border-radius: 6px; background: var(--card); border: 1px solid var(--line); color: var(--text);
+  font: inherit; font-size: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  flex: none; cursor: pointer; padding: 2px; gap: 1px;
+}
+.cpkey .l { font-weight: 600; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cpkey.tone-green .l { color: #2e9e2e; }
+.cpkey.tone-orange .l { color: #e07a10; }
+.cpkey .s { font-size: 9px; color: var(--muted); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cpkey.side { margin-left: 10px; }
+.cpkey.unmapped { border-style: dashed; border-color: var(--warn); }
+.cpkey.none { background: var(--warn-soft); }
+.cpkey.tested { background: var(--accent-soft); border-color: var(--accent); }
+.cpkey.down { background: var(--accent); color: #fff; }
+.cpkey.down .s { color: #fff; }
+.cpkey.learning { outline: 3px solid var(--edge); outline-offset: 1px; }
+.learnbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; background: var(--warn-soft); color: var(--text); padding: 6px 10px; border-radius: 6px; }
 .kb { --u: 34px; display: flex; flex-direction: column; gap: 4px; }
 .kb .r { display: flex; gap: 4px; min-height: var(--u); }
 .key {
@@ -161,4 +180,6 @@ details summary { cursor: pointer; }
   main { padding: 12px 16px; }
   .sliders label { grid-template-columns: 1fr 1fr 40px; }
   .kb { --u: 26px; }
+  .kb.chatpad { --u: 30px; }
+  .cpkey .s { display: none; }
 }
