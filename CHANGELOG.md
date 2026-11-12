@@ -1,14 +1,26 @@
 # Changelog
 
-## Desktop mode v1 (branch desktop-mode, 2026-11-12)
+## desktop-v1 (2026-11-12)
 
-- Changed: controller as mouse and keyboard on Windows. Left stick = pointer,
-  right stick = scroll, buttons map to clicks, keys or key combos. Hold
-  View + Menu to pause. Settings page at /desktop.html. `npm run desktop`.
+Pre-release on the `desktop-mode` branch. Includes everything in v4.
+
+- Changed: desktop mode. Use the controller as a mouse and keyboard on
+  Windows. Left stick = pointer, right stick = scroll, buttons map to clicks,
+  keys or key combos. Hold View + Menu to pause. Settings page at
+  /desktop.html. Start with `npm run desktop`.
 - Safety: all held input is released on pause, disconnect, stop and crash.
-  Local-only settings API.
-- Untested: real Windows hardware. Logic is unit tested; the helper compiles
-  as C# 5 and its structs match 64-bit Windows sizes.
+  The settings API answers only the page on the same PC.
+- Untested: real Windows hardware. The logic is unit tested; the helper
+  compiles as C# 5 and its structs match 64-bit Windows sizes.
+
+## v4 (2026-11-12)
+
+- Changed: first public release. MIT license, rewritten README with
+  screenshots, features, quick start, troubleshooting and fork notes.
+  CONTRIBUTING, SECURITY, bug and compatibility issue templates.
+- Changed: release workflow also publishes the desktop-mode branch as a
+  pre-release (`desktop-vN` tags).
+- No functional changes to the tester since v3.
 
 ## v3 (2026-11-12)
 

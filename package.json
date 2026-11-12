@@ -1,7 +1,8 @@
 {
   "name": "xbox-controllerbench",
-  "version": "3.0.0",
-  "description": "Browser-based tester for Xbox One controllers (USB-C or Bluetooth) and USB keyboards. Software calibration only. Nothing is written to device firmware.",
+  "version": "4.0.0",
+  "description": "Browser-based tester for Xbox controllers, the Xbox chatpad and keyboards. Runs locally in Chrome. Software calibration only. Nothing is written to device firmware.",
+  "private": true,
   "type": "module",
   "main": "server.js",
   "scripts": {
@@ -18,10 +19,18 @@
   },
   "keywords": [
     "xbox-controller",
+    "xbox-chatpad",
     "gamepad-api",
+    "gamepad-tester",
     "keyboard-tester",
+    "stick-drift",
     "chrome",
     "diagnostics"
   ],
-  "author": "opsecfreak"
+  "author": "opsecfreak",
+  "license": "MIT",
+  "homepage": "https://github.com/opsecfreak/Xbox_ControllerBench#readme",
+  "bugs": {
+    "url": "https://github.com/opsecfreak/Xbox_ControllerBench/issues"
+  }
 }

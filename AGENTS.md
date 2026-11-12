@@ -74,4 +74,10 @@ Bump `VERSION` in `public/js/app.js`, `version` in `package.json` and add a
 After the PR is merged, push a `vN` tag on `main`, or run the `release`
 workflow from the Actions tab with tag `vN`.
 `.github/workflows/release.yml` runs the tests and publishes the GitHub
-release with that CHANGELOG section as notes.
+release with that CHANGELOG section as notes. For the `desktop-mode` branch
+use tag `desktop-vN`, a `## desktop-vN (date)` CHANGELOG heading on that
+branch, and run the workflow on ref `desktop-mode`. It is published as a
+pre-release.
+
+License: MIT ([LICENSE](LICENSE)). Keep the Microsoft trademark note in the
+README.

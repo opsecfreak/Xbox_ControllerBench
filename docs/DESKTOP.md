@@ -1,4 +1,4 @@
-# Desktop mode v1 (branch `desktop-mode`)
+# Desktop mode (branch `desktop-mode`, release desktop-v1)
 
 Use the Xbox controller as a mouse and the chatpad as a keyboard on Windows,
 with settings in a web page. Pause it with one button combo when you start a
@@ -28,7 +28,9 @@ change it.
 ## Start
 
 1. Open a terminal in the repo folder on the Windows PC.
-2. Switch to this branch.
+2. Get this branch: download the `desktop-v1` pre-release from the
+   [releases page](https://github.com/opsecfreak/Xbox_ControllerBench/releases),
+   or switch an existing clone to the branch:
 
    ```bash
    git checkout desktop-mode
