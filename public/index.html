@@ -9,7 +9,7 @@
 </head>
 <body>
   <header class="top">
-    <div class="brand">ControllerBench <span class="ver" id="app-version">v2</span></div>
+    <div class="brand">ControllerBench <span class="ver" id="app-version">v3</span></div>
     <nav class="tabs" role="tablist">
       <button class="tab" role="tab" data-tab="controller" aria-selected="true">Controller</button>
       <button class="tab" role="tab" data-tab="keyboard" aria-selected="false">Keyboard</button>
@@ -27,7 +27,7 @@
           <label class="inline">Connection
             <select id="conn-type">
               <option value="usb">USB-C cable</option>
-              <option value="bluetooth">Bluetooth (v3, not tested yet)</option>
+              <option value="bluetooth">Bluetooth (not tested yet)</option>
             </select>
           </label>
         </div>
@@ -79,7 +79,7 @@
             <h2>Buttons</h2>
             <span id="btn-progress" class="pill">0 / 16</span>
           </div>
-          <p class="note">Press every button once. Tested buttons stay marked. The Xbox button is optional: some systems keep it from the browser. On Windows it can also open Game Bar.</p>
+          <p class="note">Press every button once. Tested buttons stay marked. The Xbox button is optional: some systems keep it from the browser. On Windows it can also open Game Bar. Extra buttons the controller reports (for example Share or a touchpad click) appear as dashed tiles.</p>
           <div id="btn-grid" class="btn-grid"></div>
           <button class="btn ghost" id="btn-reset">Reset button test</button>
         </div>
@@ -194,6 +194,12 @@
         <div class="row between wrap gap">
           <h2>Keyboard</h2>
           <div class="row gap wrap">
+            <label class="inline">Layout
+              <select id="kb-layout">
+                <option value="full">Full keyboard</option>
+                <option value="chatpad">Xbox chatpad</option>
+              </select>
+            </label>
             <button class="btn" id="kb-lock">Full screen + capture system keys</button>
             <button class="btn ghost" id="kb-reset">Reset keyboard test</button>
           </div>
@@ -206,10 +212,25 @@
           <div><span class="k">Chatter events</span> <span id="kb-chatter">0</span></div>
           <label class="inline">Chatter if re-pressed within <input type="number" id="kb-chatter-ms" min="5" max="200" step="5" value="30"> ms</label>
         </div>
-        <div id="kb-focus" class="kb-wrap" tabindex="0">
-          <div class="kb" id="kb-main"></div>
-          <div class="kb" id="kb-nav"></div>
-          <div class="kb" id="kb-num"></div>
+        <div id="kb-focus" class="kb-focus" tabindex="0">
+          <div id="kb-full-wrap" class="kb-wrap">
+            <div class="kb" id="kb-main"></div>
+            <div class="kb" id="kb-nav"></div>
+            <div class="kb" id="kb-num"></div>
+          </div>
+          <div id="cp-wrap" hidden>
+            <div class="row wrap gap small">
+              <span class="pill" id="cp-progress"></span>
+              <button class="btn ghost" id="cp-reset-map" type="button">Reset learned keys</button>
+            </div>
+            <p class="note">Plug the chatpad into the controller and connect the controller to the PC. Press every key. Dashed keys (+, -, X1, X2, green, orange, mic, the two icon keys) are not learned yet: click the key on screen, then press it on the chatpad. If nothing happens, click "No event": that key is handled by Windows or the chatpad and never reaches the browser. Green or orange + a letter types a symbol: it shows under Alt codes.</p>
+            <div id="cp-learn" class="learnbar" hidden>
+              <span id="cp-learn-text"></span>
+              <button class="btn ghost" id="cp-none" type="button">No event</button>
+              <button class="btn ghost" id="cp-cancel" type="button">Cancel</button>
+            </div>
+            <div id="cp-pad" class="kb chatpad"></div>
+          </div>
         </div>
         <div class="row wrap gap small"><span class="k">Other keys</span> <span id="kb-other" class="mono">none</span></div>
         <div class="row wrap gap small"><span class="k">Held keys</span> <span id="kb-held-list" class="mono">none</span></div>

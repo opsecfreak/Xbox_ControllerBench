@@ -5,7 +5,29 @@ keyboards. Runs in Chrome via npm. Live stick, trigger and button readout,
 drift and deadzone checks, rumble test, keyboard rollover, ghosting and key
 chatter tests. Software calibration only. Nothing is written to device firmware.
 
-**Version:** v2 (USB-C controller + keyboard). Bluetooth is planned for v3.
+**Version:** v3 (USB-C controller, Xbox chatpad, keyboard). Bluetooth comes later.
+
+Works with the controller, with the chatpad plugged into the controller, or
+with both together.
+
+| Xbox One controller | Xbox chatpad |
+|---|---|
+| ![Xbox One controller: button names and index numbers](docs/images/xbox-controller-layout.svg) | ![Xbox chatpad keyboard](docs/images/xbox-chatpad.jpg) |
+| Every button, both sticks and both triggers. Extra buttons the controller reports show as extra tiles. | Every key, including +, -, X1, X2, green, orange, mic and the two icon keys. |
+
+## Compatibility
+
+| Device | Status |
+|---|---|
+| Xbox One controller, USB-C, Windows 10/11, Chrome | Tested (v1 report): standard mapping, 17 buttons, 4 axes, rumble API present. |
+| Xbox chatpad on that controller, Windows | Partly tested: letters, digits and Alt-code symbols reach the browser. Special keys: learn them in the Chatpad layout. |
+| Xbox Series X\|S, Xbox 360, Xbox Elite controllers | Expected to work through the same Windows driver. Unverified. Elite back paddles are usually not reported to the browser (unverified). |
+| PlayStation DualShock 4 and DualSense, Switch Pro Controller | Expected to work if Chrome reports `mapping: standard`. Unverified. Button names on the page use Xbox names (A = Cross, B = Circle, X = Square, Y = Triangle). |
+| Any other gamepad | Use the **Raw inputs** panel. Every axis and button shows by index. |
+| Any USB or wireless keyboard | Full keyboard layout. Keys not on the layout show under **Other keys**. |
+
+The chatpad's Alt-code symbols (green or orange + a letter) work only on
+Windows. Bluetooth is not tested yet (issue 3).
 
 ## Requirements
 
@@ -73,6 +95,26 @@ Notes:
   suggestion = shortest edge radius from the range test. These are a starting
   point. Edit them as needed.
 
+## Chatpad tests (Keyboard tab, layout "Xbox chatpad")
+
+1. Plug the chatpad into the bottom of the controller.
+2. Connect the controller to the PC.
+3. Open the **Keyboard** tab. Set **Layout** to **Xbox chatpad**.
+4. Press every key on the chatpad. Tested keys turn green.
+5. For each dashed key (+, -, X1, X2, green, orange, mic, Pad icon, People icon):
+   1. Click the key on screen.
+   2. Press the same key on the chatpad.
+   3. If the page shows nothing, click **No event**.
+6. Check the counter. It reaches 51 / 51 when every key is pressed or marked.
+
+Notes:
+- Learned keys are saved in this browser. **Reset learned keys** clears them.
+- A key that is "No event" is handled by Windows or the chatpad itself and
+  never reaches the browser (for example a mic mute key). Unverified per key.
+- Green or orange + a letter types a symbol as a Windows Alt code. The symbol
+  shows under **Alt codes**.
+- You can click any key on screen to learn it again.
+
 ## Keyboard tests (Keyboard tab)
 
 1. Open the **Keyboard** tab and click in the page.
@@ -122,5 +164,7 @@ server. See [AGENTS.md](AGENTS.md) for the code map and rules.
 
 ## Roadmap
 
-- v3: Bluetooth connection. Test Chrome mapping over Bluetooth on Windows and
-  Linux. Fix any non-standard mapping.
+- Bluetooth connection (issue 3). Test Chrome mapping over Bluetooth on
+  Windows and Linux. Fix any non-standard mapping.
+- Desktop mode: use the controller and chatpad as mouse and keyboard, with
+  settings. Built on the separate `desktop-mode` branch.

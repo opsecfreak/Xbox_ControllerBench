@@ -3,6 +3,7 @@
 
 import { MAIN, NAV, NUMPAD, allCodes } from './lib/layout.js';
 import { KeyTracker } from './lib/keytracker.js';
+import { initChatpad, chatpadDown, chatpadUp, resetChatpadTest, chatpadReport } from './chatpad-ui.js';
 
 const $ = (id) => document.getElementById(id);
 const LOG_MAX = 150;
@@ -63,6 +64,7 @@ function onDown(e) {
   const res = tracker.down(code, t, e.repeat);
   if (res.type === 'repeat') return; // do not flood the log with auto-repeat
   if (!known.has(code)) other.add(code);
+  chatpadDown(e, code);
   const el = keyEls.get(code);
   if (el) {
     el.classList.add('down', 'tested');
@@ -87,6 +89,7 @@ function onUp(e) {
   const t = e.timeStamp;
   const res = tracker.up(code, t);
   keyEls.get(code)?.classList.remove('down');
+  chatpadUp(e, code);
   const dt = lastEventT === null ? 0 : t - lastEventT;
   lastEventT = t;
   addLog(`+${dt.toFixed(1).padStart(7)} ms  up    ${code.padEnd(14)} held=${res.heldMs === null ? '?' : res.heldMs.toFixed(1) + ' ms'}`);
@@ -129,6 +132,7 @@ function reset() {
   lastEventT = null;
   for (const el of keyEls.values()) el.classList.remove('down', 'tested', 'chatter');
   $('kb-log').textContent = '';
+  resetChatpadTest();
   renderStats();
 }
 
@@ -147,6 +151,14 @@ async function lockKeys() {
   $('kb-focus').focus();
 }
 
+function setLayout(name) {
+  const chatpad = name === 'chatpad';
+  $('kb-full-wrap').hidden = chatpad;
+  $('cp-wrap').hidden = !chatpad;
+  $('kb-layout').value = chatpad ? 'chatpad' : 'full';
+  try { localStorage.setItem('controllerbench.kblayout', name); } catch { /* storage blocked */ }
+}
+
 export function setKeyboardActive(on) {
   active = on;
   if (on) $('kb-focus').focus();
@@ -157,6 +169,11 @@ export function initKeyboard() {
   buildBlock($('kb-main'), MAIN);
   buildBlock($('kb-nav'), NAV);
   buildBlock($('kb-num'), NUMPAD);
+  initChatpad(addLog);
+  let layout = 'full';
+  try { layout = localStorage.getItem('controllerbench.kblayout') || 'full'; } catch { /* storage blocked */ }
+  setLayout(layout);
+  $('kb-layout').addEventListener('change', (e) => { setLayout(e.target.value); $('kb-focus').focus(); });
   window.addEventListener('keydown', onDown, true);
   window.addEventListener('keyup', onUp, true);
   window.addEventListener('blur', onBlur);
@@ -174,5 +191,5 @@ export function initKeyboard() {
 }
 
 export function keyboardReport() {
-  return { ...tracker.summary(), otherKeys: [...other] };
+  return { ...tracker.summary(), otherKeys: [...other], chatpad: chatpadReport() };
 }

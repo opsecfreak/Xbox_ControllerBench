@@ -25,7 +25,7 @@ test('serves the page and modules with the right types', async () => {
 });
 
 test('every module the page imports exists', async () => {
-  for (const f of ['app', 'controller', 'keyboard', 'diagnostics', 'errors', 'lib/stats', 'lib/calibration', 'lib/keytracker', 'lib/mapping', 'lib/layout']) {
+  for (const f of ['app', 'controller', 'keyboard', 'diagnostics', 'errors', 'lib/stats', 'lib/calibration', 'lib/keytracker', 'lib/mapping', 'lib/layout', 'lib/chatpad', 'chatpad-ui']) {
     const r = await fetch(`${base}/js/${f}.js`);
     assert.equal(r.status, 200, f);
   }

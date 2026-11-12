@@ -1,5 +1,15 @@
 # Changelog
 
+## v3 (2026-11-12)
+
+- Changed: Xbox chatpad layout in the Keyboard tab. All 51 chatpad keys can be
+  tested. Special keys (+, -, X1, X2, green, orange, mic, two icon keys) are
+  learned by click-then-press, or marked "No event". Saved per browser.
+- Changed: extra controller buttons (index 17 and up, for example Share) show
+  as extra tiles.
+- Changed: README has controller and chatpad images and a compatibility table.
+- Untested: special chatpad key codes on real hardware. Other controller models.
+
 ## v2 (2026-11-11)
 
 - Changed: fixes from the first real test (Windows, Chrome, Xbox controller
