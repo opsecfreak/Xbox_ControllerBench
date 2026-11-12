@@ -166,5 +166,7 @@ server. See [AGENTS.md](AGENTS.md) for the code map and rules.
 
 - Bluetooth connection (issue 3). Test Chrome mapping over Bluetooth on
   Windows and Linux. Fix any non-standard mapping.
-- Desktop mode: use the controller and chatpad as mouse and keyboard, with
-  settings. Built on the separate `desktop-mode` branch.
+- Desktop mode: use the controller and chatpad as mouse and keyboard on
+  Windows, with a settings page. Desktop mode v1 is on the
+  [`desktop-mode` branch](https://github.com/opsecfreak/Xbox_ControllerBench/tree/desktop-mode)
+  (guide: `docs/DESKTOP.md` on that branch). Not tested on hardware yet.
