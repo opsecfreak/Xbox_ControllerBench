@@ -1,5 +1,14 @@
 # Changelog
 
+## v4 (2026-11-12)
+
+- Changed: first public release. MIT license, rewritten README with
+  screenshots, features, quick start, troubleshooting and fork notes.
+  CONTRIBUTING, SECURITY, bug and compatibility issue templates.
+- Changed: release workflow also publishes the desktop-mode branch as a
+  pre-release (`desktop-vN` tags).
+- No functional changes to the tester since v3.
+
 ## v3 (2026-11-12)
 
 - Changed: Xbox chatpad layout in the Keyboard tab. All 51 chatpad keys can be
