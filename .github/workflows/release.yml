@@ -1,6 +1,8 @@
 name: release
 
-# Two ways to release vN (v1, v2, v3...):
+# Tags: vN for main (v1, v2, v3...), desktop-vN for the desktop-mode branch.
+# desktop-vN releases are marked as pre-releases.
+# Two ways to release:
 # 1. Push a tag vN on main.
 # 2. Actions tab > release > Run workflow, enter vN. GitHub creates the tag
 #    on the current main commit.
@@ -13,7 +15,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag, for example v1'
+        description: 'Release tag, for example v4 (main) or desktop-v1 (desktop-mode branch)'
         required: true
 
 permissions:
@@ -28,11 +30,18 @@ jobs:
           INPUT_TAG: ${{ inputs.tag }}
         run: |
           TAG="${INPUT_TAG:-$GITHUB_REF_NAME}"
-          if ! [[ "$TAG" =~ ^v[0-9]+(\.[0-9]+)*$ ]]; then
-            echo "Tag must look like v1 or v1.2. Got: $TAG" >&2
+          if ! [[ "$TAG" =~ ^(desktop-)?v[0-9]+(\.[0-9]+)*$ ]]; then
+            echo "Tag must look like v1, v1.2 or desktop-v1. Got: $TAG" >&2
             exit 1
           fi
           echo "TAG=$TAG" >> "$GITHUB_ENV"
+          if [[ "$TAG" == desktop-* ]]; then
+            echo "PRE=--prerelease" >> "$GITHUB_ENV"
+            echo "TITLE=ControllerBench Desktop mode ${TAG#desktop-}" >> "$GITHUB_ENV"
+          else
+            echo "PRE=" >> "$GITHUB_ENV"
+            echo "TITLE=ControllerBench $TAG" >> "$GITHUB_ENV"
+          fi
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
@@ -58,6 +67,13 @@ jobs:
             echo '```'
             echo
             echo 'Then open http://127.0.0.1:3100/ in Chrome. Node 18 or newer. No npm install needed.'
+            if [[ "$TAG" == desktop-* ]]; then
+              echo
+              echo 'Desktop mode (Windows): run `npm run desktop`, then open http://127.0.0.1:3100/desktop.html for settings.'
+              echo 'Hold View + Menu for 1 s to pause. Guide: docs/DESKTOP.md.'
+            fi
+            echo
+            echo 'License: MIT.'
           } >> notes.md
           cat notes.md
       - name: Publish release
@@ -65,7 +81,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           if [ "$GITHUB_EVENT_NAME" = "push" ]; then
-            gh release create "$TAG" --title "ControllerBench $TAG" --notes-file notes.md --verify-tag
+            gh release create "$TAG" --title "$TITLE" --notes-file notes.md --verify-tag $PRE
           else
-            gh release create "$TAG" --title "ControllerBench $TAG" --notes-file notes.md --target "$GITHUB_SHA"
+            gh release create "$TAG" --title "$TITLE" --notes-file notes.md --target "$GITHUB_SHA" $PRE
           fi
