@@ -66,6 +66,7 @@ h3 { font-size: 14px; margin: 14px 0 6px; }
   border: 0; background: none; color: var(--muted); padding: 6px 10px; border-radius: 6px;
   cursor: pointer; font: inherit;
 }
+.tab { text-decoration: none; }
 .tab[aria-selected="true"] { background: var(--accent-soft); color: var(--text); font-weight: 600; }
 .badge { background: var(--bad); color: #fff; border-radius: 9px; padding: 0 6px; font-size: 11px; }
 
@@ -134,6 +135,12 @@ input[type="number"] { width: 80px; }
 .results td.ok { color: var(--accent); font-weight: 600; }
 .cal { overflow-x: auto; display: block; max-width: 100%; }
 
+.form { display: grid; gap: 6px; margin: 6px 0 12px; }
+.form label { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; font-size: 13px; }
+.form input[type="number"] { width: 110px; }
+.form select { width: 160px; }
+#dm-buttons select { max-width: 220px; }
+#dm-buttons input[type="text"] { font: inherit; width: 170px; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 5px; padding: 3px 6px; }
 .sliders { display: grid; gap: 6px; margin-bottom: 10px; }
 .sliders label { display: grid; grid-template-columns: 150px 1fr 44px; gap: 8px; align-items: center; font-size: 13px; }
 
